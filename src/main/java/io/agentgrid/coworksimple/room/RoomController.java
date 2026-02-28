@@ -1,8 +1,10 @@
 package io.agentgrid.coworksimple.room;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
@@ -10,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,8 +38,8 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<RoomDTO> createRoom(@RequestBody RoomDTO roomDto) {
-        Room room = RoomMapper.toRoom(roomDto);
+    public ResponseEntity<RoomDTO> createRoom(@Valid @RequestBody RoomDTO roomDTO) {
+        Room room = RoomMapper.toRoom(roomDTO);
         Optional<Room> created = roomService.create(room);
 
         if (created.isEmpty()) {
@@ -52,8 +53,8 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RoomDTO> updateRoom(@PathVariable Long id, @RequestBody RoomDTO roomDto) {
-        Room room = new Room(id, roomDto.name(), roomDto.capacity(), roomDto.isAvailable());
+    public ResponseEntity<RoomDTO> updateRoom(@PathVariable UUID id, @Valid @RequestBody RoomDTO roomDTO) {
+        Room room = new Room(id, roomDTO.name(), roomDTO.capacity());
 
         try {
             Optional<Room> updated = roomService.update(id, room);
@@ -66,17 +67,8 @@ public class RoomController {
         }
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<RoomDTO> updateAvailability(@PathVariable Long id, @RequestBody RoomDTO roomDto) {
-        Optional<Room> updated = roomService.updateAvailability(id, roomDto.isAvailable());
-        if (updated.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(RoomMapper.toDto(updated.get()));
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRoom(@PathVariable UUID id) {
         roomService.delete(id);
         return ResponseEntity.noContent().build();
     }

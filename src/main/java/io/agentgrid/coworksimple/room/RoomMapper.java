@@ -7,10 +7,9 @@ final class RoomMapper {
 
     static RoomDTO toDto(Room room) {
         return new RoomDTO(
-                room.id(),
-                room.name(),
-                room.capacity(),
-                room.isAvailable()
+                room.getId(),
+                room.getName(),
+                room.getCapacity()
         );
     }
 
@@ -18,8 +17,7 @@ final class RoomMapper {
         return new Room(
                 dto.id(),
                 dto.name(),
-                dto.capacity(),
-                dto.isAvailable()
+                dto.capacity()
         );
     }
 }

@@ -4,10 +4,23 @@ server:
 spring:
   application:
     name: Cowork-Simple
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cowork_simple
+    username: cowork
+    password: cowork
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
 
 cowork:
   server-name: Cowork-Simple
-  version: 0.1.0
+  version: 0.6.0
 
 management:
   endpoints:
