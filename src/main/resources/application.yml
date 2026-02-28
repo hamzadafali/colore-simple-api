@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Cowork-Simple
+
+cowork:
+  server-name: Cowork-Simple
+  version: 0.1.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
