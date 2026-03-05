@@ -1,0 +1,28 @@
+Application : Cowork Simple
+===========================
+
+Résumé
+------
+Application backend Spring Boot pour la gestion de salles de coworking, de leurs caractéristiques et des réservations associées.
+
+Cas d'utilisation principaux
+----------------------------
+- UC-01 : Consulter la liste des salles disponibles afin de préparer une réservation ou une affectation.
+- UC-02 : Créer une nouvelle salle avec sa capacité afin d'élargir l'offre d'espaces disponibles.
+- UC-03 : Mettre à jour le nom ou la capacité d'une salle existante tout en garantissant l'unicité du nom.
+- UC-04 : Supprimer une salle et ses dépendances (caractéristiques, réservations) lorsqu'elle n'est plus proposée.
+- UC-05 : Réserver une salle pour un créneau horaire en vérifiant l'absence de conflits avec d'autres réservations.
+- UC-06 : Recevoir un retour d'erreur explicite lorsque la salle demandée n'existe pas ou que la réservation est invalide.
+- UC-07 : Interroger l'état de santé de l'application et obtenir les métadonnées serveur (version, protocole, horodatage).
+
+Fonctionnalités clés
+--------------------
+- API REST /api/v1/rooms pour lister, créer, modifier et supprimer des salles (DTO validé, mapping entité/dto, réponses HTTP appropriées).
+- Validation métier sur les salles : nom obligatoire et unique (ignore la casse), capacité minimale à 1, génération automatique d'identifiants UUID.
+- Modèle de données relationnel avec Flyway (tables rooms, features, room_features, bookings) et contraintes d'intégrité référentielles.
+- Gestion des caractéristiques (features) associées aux salles par relation many-to-many, prête pour des usages futurs.
+- Service de réservation avec vérification des chevauchements (requête personnalisée), validation chronologique des créneaux et génération d'erreurs dédiées.
+- Gestion d'erreurs centralisée (ProblemDetail) pour conflits de réservation, validations, ressources inexistantes et autres exceptions.
+- Endpoint système /api/v1/system/info renvoyant nom serveur, version, statut "UP", protocole et adresse client, avec horodatage in-tête.
+- Configuration CORS autorisant un front-end (http://localhost:4200) à appeler les endpoints REST de l'API.
+- Intégration PostgreSQL (configuration datasource) et migration Flyway assurant la cohérence du schéma en environnement local.
