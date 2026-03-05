@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: cowork-simple-postgres
+    environment:
+      POSTGRES_DB: cowork_simple
+      POSTGRES_USER: cowork
+      POSTGRES_PASSWORD: cowork
+    ports:
+      - "5432:5432"
+    volumes:
+      - cowork_simple_pgdata:/var/lib/postgresql/data
+
+volumes:
+  cowork_simple_pgdata:
