@@ -18,6 +18,10 @@ public class BookingService {
     private final BookingRepositoryPort bookingRepository;
     private final RoomRepositoryPort roomRepository;
 
+    public List<Booking> findAll() {
+        return bookingRepository.findAll();
+    }
+
     @Transactional
     public Booking createBooking(BookingRequest request) {
         OffsetDateTime startTime = request.startTime();

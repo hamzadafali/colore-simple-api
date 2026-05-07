@@ -10,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookingJpaRepository extends JpaRepository<Booking, UUID> {
 
+    @Query("select b from Booking b join fetch b.room")
+    List<Booking> findAllWithRoom();
+
     @Query("select b from Booking b where b.room.id = :roomId and b.startTime < :endTime and b.endTime > :startTime")
     List<Booking> findOverlappingBookings(
             @Param("roomId") UUID roomId,
