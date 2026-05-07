@@ -15,6 +15,11 @@ public class BookingPersistenceAdapter implements BookingRepositoryPort {
     private final BookingJpaRepository bookingJpaRepository;
 
     @Override
+    public List<Booking> findAll() {
+        return bookingJpaRepository.findAllWithRoom();
+    }
+
+    @Override
     public List<Booking> findOverlappingBookings(UUID roomId, OffsetDateTime startTime, OffsetDateTime endTime) {
         return bookingJpaRepository.findOverlappingBookings(roomId, startTime, endTime);
     }

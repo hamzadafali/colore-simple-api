@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public interface BookingRepositoryPort {
 
+    List<Booking> findAll();
+
     List<Booking> findOverlappingBookings(UUID roomId, OffsetDateTime startTime, OffsetDateTime endTime);
 
     Booking save(Booking booking);
