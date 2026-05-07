@@ -1,6 +1,6 @@
 package io.agentgrid.coworksimple.common;
 
-import io.agentgrid.coworksimple.booking.BookingService;
+import io.agentgrid.coworksimple.booking.application.BookingService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.springframework.http.HttpStatus;
