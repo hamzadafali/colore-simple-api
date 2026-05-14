@@ -16,4 +16,13 @@ public interface BookingJpaRepository extends JpaRepository<Booking, UUID> {
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime
     );
+
+    // JPQL portable : current_timestamp represente le NOW() de la base.
+    @Query("""
+            select b from Booking b
+            where b.roomId = :roomId
+              and b.startTime > current_timestamp
+              and b.status = io.agentgrid.coworksimple.booking.domain.BookingStatus.CONFIRMED
+            """)
+    List<Booking> findFutureBookingsByRoomId(@Param("roomId") UUID roomId);
 }

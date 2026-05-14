@@ -6,6 +6,7 @@ import io.agentgrid.coworksimple.booking.domain.Booking;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,17 @@ public class BookingController {
                 .cacheControl(CacheControl.noStore())
                 .body(bookings);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingDTO> getBookingById(@PathVariable UUID id) {
+        // Endpoint de verification : il expose aussi le statut courant de la reservation.
+        BookingDTO booking = BookingMapper.toDto(bookingService.findById(id));
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(booking);
+    }
+
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
         Booking booking = bookingService.createBooking(request);

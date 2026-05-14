@@ -44,6 +44,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
 
+    @ExceptionHandler(BookingService.BookingNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleBookingNotFound(
+            BookingService.BookingNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage()
+        );
+        problemDetail.setTitle("Booking Not Found");
+        problemDetail.setProperty("path", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleValidation(MethodArgumentNotValidException exception,
                                                           HttpServletRequest request) {
