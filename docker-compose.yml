@@ -1,17 +1,29 @@
-version: "3.9"
-
+# docker-compose.yml - infrastructure locale
 services:
-  postgres:
-    image: postgres:16
-    container_name: cowork-simple-postgres
+  rabbitmq:
+    # Broker local pour les evenements entre room-service et booking-service.
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Management UI -> http://localhost:15672
     environment:
-      POSTGRES_DB: cowork_simple
+      RABBITMQ_DEFAULT_USER: cowork
+      RABBITMQ_DEFAULT_PASS: cowork
+
+  rooms-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: rooms_db
       POSTGRES_USER: cowork
       POSTGRES_PASSWORD: cowork
     ports:
-      - "5432:5432"
-    volumes:
-      - cowork_simple_pgdata:/var/lib/postgresql/data
+      - "5435:5432"
 
-volumes:
-  cowork_simple_pgdata:
+  bookings-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bookings_db
+      POSTGRES_USER: cowork
+      POSTGRES_PASSWORD: cowork
+    ports:
+      - "5434:5432"

@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: jdbc:postgresql://localhost:5434/bookings_db
+    username: cowork
+    password: cowork
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+  rabbitmq:
+    # Connexion AMQP utilisee par booking-service pour consommer les evenements room.*.
+    host: localhost
+    port: 5672
+    username: cowork
+    password: cowork
+
+server:
+  port: 8082
+
+services:
+  room:
+    url: http://localhost:8081
+
+cowork:
+  server-name: booking-service
+  version: 0.6.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"

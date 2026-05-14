@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: room-service
+  datasource:
+    url: jdbc:postgresql://localhost:5435/rooms_db
+    username: cowork
+    password: cowork
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+  rabbitmq:
+    # Connexion AMQP utilisee par room-service pour publier les evenements room.*.
+    host: localhost
+    port: 5672
+    username: cowork
+    password: cowork
+
+server:
+  port: 8081
+
+cowork:
+  server-name: room-service
+  version: 0.6.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"

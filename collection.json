@@ -1,0 +1,696 @@
+{
+  "info": {
+    "name": "CoworkSimple API",
+    "_postman_id": "3a665d67-842a-4edf-8c38-5ec6b4b54883",
+    "description": "Collection Postman pour interagir avec les services Room et Booking de la plateforme CoworkSimple. Les requêtes incluent des scripts de tests et de préparation pour accélérer les parcours métiers principaux.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Room Service",
+      "description": "Endpoints principaux pour la gestion des salles (service sur le port 8081).",
+      "item": [
+        {
+          "name": "Rooms",
+          "description": "Opérations CRUD sur les salles.",
+          "item": [
+            {
+              "name": "Lister les salles",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{room_base_url}}/api/v1/rooms",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "rooms"
+                  ]
+                },
+                "description": "Récupère la liste complète des salles disponibles. Exécuter après la création d'une salle pour valider l'apparition de la nouvelle entrée."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Réponse JSON est un tableau\", function () {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(Array.isArray(json)).to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Récupérer une salle",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{room_base_url}}/api/v1/rooms/{{roomId}}",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "rooms",
+                    "{{roomId}}"
+                  ]
+                },
+                "description": "Récupère une salle par son identifiant unique. Exécuter après avoir mis à jour la variable {{roomId}} (création ou import)."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 ou 404\", function () {",
+                      "  pm.expect([200, 404]).to.include(pm.response.code);",
+                      "});",
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.id).to.exist;",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Créer une salle",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"{{room_name}}\",\n  \"capacity\": {{room_capacity}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{room_base_url}}/api/v1/rooms",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "rooms"
+                  ]
+                },
+                "description": "Crée une nouvelle salle. Le nom doit être unique et la capacité >= 1. La réponse capture automatiquement l'identifiant dans la variable de collection {{roomId}}."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 201 attendu\", function () {",
+                      "  pm.response.to.have.status(201);",
+                      "});",
+                      "pm.test(\"Entête Location présent\", function () {",
+                      "  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+                      "});",
+                      "pm.test(\"Identifiant de salle capturé\", function () {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.id).to.exist;",
+                      "  pm.collectionVariables.set('roomId', json.id);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Mettre à jour une salle",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"{{room_name_updated}}\",\n  \"capacity\": {{room_capacity_update}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{room_base_url}}/api/v1/rooms/{{roomId}}",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "rooms",
+                    "{{roomId}}"
+                  ]
+                },
+                "description": "Met à jour le nom et/ou la capacité d'une salle existante. Les conflits de nom renvoient 409 CONFLICT."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 ou 204\", function () {",
+                      "  pm.expect([200, 204]).to.include(pm.response.code);",
+                      "});",
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  pm.collectionVariables.set('roomId', json.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Supprimer une salle",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{room_base_url}}/api/v1/rooms/{{roomId}}",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "rooms",
+                    "{{roomId}}"
+                  ]
+                },
+                "description": "Supprime une salle existante. L'opération est idempotente : aucune erreur si l'identifiant n'existe pas."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 204 attendu\", function () {",
+                      "  pm.response.to.have.status(204);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "System",
+          "description": "Informations système et supervision du room-service.",
+          "item": [
+            {
+              "name": "Room Service - System Info",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{room_base_url}}/api/v1/system/info",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "system",
+                    "info"
+                  ]
+                },
+                "description": "Renvoie les informations système du room-service ainsi qu'un en-tête X-Cowork-Server-Time."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Entête X-Cowork-Server-Time présent\", function () {",
+                      "  pm.expect(pm.response.headers.has('X-Cowork-Server-Time')).to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Room Service - Health",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{room_base_url}}/actuator/health",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "actuator",
+                    "health"
+                  ]
+                },
+                "description": "Endpoint Spring Boot Actuator pour vérifier la santé du room-service."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Statut UP\", function () {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql('UP');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Room Service - Actuator Info",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{room_base_url}}/actuator/info",
+                  "host": [
+                    "{{room_base_url}}"
+                  ],
+                  "path": [
+                    "actuator",
+                    "info"
+                  ]
+                },
+                "description": "Métadonnées supplémentaires du room-service exposées par Spring Boot Actuator."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Booking Service",
+      "description": "Endpoints pour la gestion des réservations (service sur le port 8082).",
+      "item": [
+        {
+          "name": "Bookings",
+          "description": "Création et consultation des réservations de salles.",
+          "item": [
+            {
+              "name": "Créer une réservation",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"userEmail\": \"{{booking_user_email}}\",\n  \"startTime\": \"{{booking_start_time}}\",\n  \"endTime\": \"{{booking_end_time}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{booking_base_url}}/api/v1/bookings",
+                  "host": [
+                    "{{booking_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "bookings"
+                  ]
+                },
+                "description": "Crée une réservation pour une salle existante. Les dates sont générées automatiquement dans le futur à chaque exécution."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const start = new Date(Date.now() + 60 * 60 * 1000);",
+                      "const end = new Date(start.getTime() + 60 * 60 * 1000);",
+                      "pm.collectionVariables.set('booking_start_time', start.toISOString());",
+                      "pm.collectionVariables.set('booking_end_time', end.toISOString());"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 201 attendu\", function () {",
+                      "  pm.response.to.have.status(201);",
+                      "});",
+                      "pm.test(\"Entête Location présent\", function () {",
+                      "  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+                      "});",
+                      "pm.test(\"Identifiant de réservation capturé\", function () {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.id).to.exist;",
+                      "  pm.collectionVariables.set('bookingId', json.id);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Récupérer une réservation",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{booking_base_url}}/api/v1/bookings/{{bookingId}}",
+                  "host": [
+                    "{{booking_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "bookings",
+                    "{{bookingId}}"
+                  ]
+                },
+                "description": "Récupère une réservation existante à partir de son identifiant. Mettre à jour {{bookingId}} après la création d'une réservation."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 ou 404\", function () {",
+                      "  pm.expect([200, 404]).to.include(pm.response.code);",
+                      "});",
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.id).to.eql(pm.collectionVariables.get('bookingId'));",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "System",
+          "description": "Informations système et supervision du booking-service.",
+          "item": [
+            {
+              "name": "Booking Service - System Info",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{booking_base_url}}/api/v1/system/info",
+                  "host": [
+                    "{{booking_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "system",
+                    "info"
+                  ]
+                },
+                "description": "Renvoie les informations système du booking-service ainsi qu'un en-tête X-Cowork-Server-Time."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Entête X-Cowork-Server-Time présent\", function () {",
+                      "  pm.expect(pm.response.headers.has('X-Cowork-Server-Time')).to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Booking Service - Health",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{booking_base_url}}/actuator/health",
+                  "host": [
+                    "{{booking_base_url}}"
+                  ],
+                  "path": [
+                    "actuator",
+                    "health"
+                  ]
+                },
+                "description": "Endpoint Spring Boot Actuator pour vérifier la santé du booking-service."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Statut UP\", function () {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql('UP');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Booking Service - Actuator Info",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{booking_base_url}}/actuator/info",
+                  "host": [
+                    "{{booking_base_url}}"
+                  ],
+                  "path": [
+                    "actuator",
+                    "info"
+                  ]
+                },
+                "description": "Métadonnées supplémentaires du booking-service exposées par Spring Boot Actuator."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "room_base_url",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "booking_base_url",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "roomId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "room_name",
+      "value": "Salle Orion",
+      "type": "string"
+    },
+    {
+      "key": "room_name_updated",
+      "value": "Salle Orion Refonte",
+      "type": "string"
+    },
+    {
+      "key": "room_capacity",
+      "value": "12",
+      "type": "string"
+    },
+    {
+      "key": "room_capacity_update",
+      "value": "14",
+      "type": "string"
+    },
+    {
+      "key": "booking_user_email",
+      "value": "utilisateur@example.com",
+      "type": "string"
+    },
+    {
+      "key": "booking_start_time",
+      "value": "2030-01-10T09:00:00Z",
+      "type": "string"
+    },
+    {
+      "key": "booking_end_time",
+      "value": "2030-01-10T11:00:00Z",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    }
+  ]
+}

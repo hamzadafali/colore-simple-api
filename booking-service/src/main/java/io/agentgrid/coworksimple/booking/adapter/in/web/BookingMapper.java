@@ -10,10 +10,12 @@ final class BookingMapper {
     static BookingDTO toDto(Booking booking) {
         return new BookingDTO(
                 booking.getId(),
-                booking.getRoom().getId(),
+                booking.getRoomId(),
                 booking.getUserEmail(),
                 booking.getStartTime(),
-                booking.getEndTime()
+                booking.getEndTime(),
+                // Le DTO de sortie inclut maintenant le statut courant de la réservation.
+                booking.getStatus()
         );
     }
 }
