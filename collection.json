@@ -392,6 +392,48 @@
           "description": "Création et consultation des réservations de salles.",
           "item": [
             {
+              "name": "Lister les réservations",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{booking_base_url}}/api/v1/bookings",
+                  "host": [
+                    "{{booking_base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "bookings"
+                  ]
+                },
+                "description": "Récupère la liste de toutes les réservations enregistrées dans le système."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Statut 200 attendu\", function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Réponse JSON est un tableau\", function () {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(Array.isArray(json)).to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
               "name": "Créer une réservation",
               "request": {
                 "method": "POST",
